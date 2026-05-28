@@ -17,13 +17,9 @@ const PORT = process.env.PORT || 5000;
 async function start() {
   const app = express();
 
-  app.use(
-    cors({
-      origin: process.env.ALLOWED_ORIGINS
-        ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim())
-        : ['http://localhost:5173', 'http://127.0.0.1:5173'],
-    })
-  );
+  // In production (same-origin), CORS isn't needed but we keep it permissive.
+  // In dev, frontend is on localhost:5173 hitting localhost:5000.
+  app.use(cors());
   app.set('trust proxy', true);
   app.use(express.json({ limit: '1mb' }));
 
