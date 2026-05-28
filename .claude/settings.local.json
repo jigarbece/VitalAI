@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\SW-JigarPandya\\\\Projects\\\\VitalAI\\\\server\\\\data\")",
+      "Bash(USE_MOCK_AI=true PORT=5055 node index.js)",
+      "Bash(curl -s http://localhost:5055/api/health)",
+      "Bash(curl -s -X POST http://localhost:5055/api/visit)",
+      "Bash(curl -s -X POST http://localhost:5055/api/quick-plan -H \"Content-Type: application/json\" -d '{\"age\":28,\"gender\":\"Female\",\"weight\":62,\"height\":167,\"diet\":\"Vegetarian\",\"activity\":\"Lightly Active \\(1-3 days/week\\)\",\"goals\":[\"Improve Energy\"],\"conditions\":\"\"}')",
+      "Bash(curl -s -X POST http://localhost:5055/api/contact -H \"Content-Type: application/json\" -d '{\"name\":\"Test\",\"email\":\"a@b.com\",\"message\":\"Hello feedback\"}')",
+      "Bash(kill %1)"
+    ]
+  }
+}

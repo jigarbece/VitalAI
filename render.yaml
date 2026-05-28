@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: vitalai
+    runtime: node
+    plan: free
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: USE_MOCK_AI
+        value: false
+      - key: GEMINI_API_KEY
+        sync: false        # you'll set this in the Render dashboard
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: MAIL_TO
+        value: curiolightforyou@gmail.com
