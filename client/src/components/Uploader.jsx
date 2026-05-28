@@ -57,9 +57,9 @@ export default function Uploader({ file, onFileSelected, onNext, onBack }) {
 
   return (
     <section className="animate-fade-in max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold">Step 1 · Upload your blood report</h2>
-        <p className="text-white/60 mt-2">PDF, JPG, or PNG · up to 10MB. The file never leaves this session.</p>
+      <div className="mb-5 sm:mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold">Step 1 · Upload your blood report</h2>
+        <p className="text-white/60 mt-1.5 sm:mt-2 text-sm sm:text-base">PDF, JPG, or PNG · up to 10MB. The file never leaves this session.</p>
       </div>
 
       <div
@@ -71,7 +71,7 @@ export default function Uploader({ file, onFileSelected, onNext, onBack }) {
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
-        className={`card p-10 text-center cursor-pointer transition-all ${dragOver ? 'border-teal bg-teal/5 scale-[1.01]' : 'hover:border-white/25'}`}
+        className={`card p-6 sm:p-10 text-center cursor-pointer transition-all ${dragOver ? 'border-teal bg-teal/5 scale-[1.01]' : 'hover:border-white/25'}`}
       >
         <input
           ref={inputRef}
@@ -82,16 +82,16 @@ export default function Uploader({ file, onFileSelected, onNext, onBack }) {
           data-testid="file-input"
         />
 
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-teal/10 border border-teal/30 flex items-center justify-center mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00D4AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-teal/10 border border-teal/30 flex items-center justify-center mb-3 sm:mb-4">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00D4AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 sm:w-7 sm:h-7">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="17 8 12 3 7 8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
         </div>
-        <p className="text-lg font-semibold">Drop your report here</p>
-        <p className="text-sm text-white/50 mt-1">or click to browse</p>
-        <p className="text-xs text-white/30 mt-3">PDF · JPG · PNG · max 10MB</p>
+        <p className="text-base sm:text-lg font-semibold">Drop your report here</p>
+        <p className="text-sm text-white/50 mt-1">or tap to browse</p>
+        <p className="text-xs text-white/30 mt-2 sm:mt-3">PDF · JPG · PNG · max 10MB</p>
       </div>
 
       {file && progress < 100 && (
@@ -129,12 +129,12 @@ export default function Uploader({ file, onFileSelected, onNext, onBack }) {
         </div>
       )}
 
-      <div className="mt-8 flex justify-between">
-        <button onClick={onBack} className="btn-ghost">← Back</button>
+      <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row justify-between gap-3">
+        <button onClick={onBack} className="btn-ghost w-full sm:w-auto">← Back</button>
         <button
           onClick={onNext}
           disabled={!file || progress < 100}
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
         >
           Next: Your Profile →
         </button>

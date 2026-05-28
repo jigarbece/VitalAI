@@ -27,9 +27,9 @@ export default function BloodReport({ data }) {
 
   return (
     <div className="space-y-6">
-      <div className={`card p-6 ${c.bg} ${c.border}`}>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="relative w-24 h-24 shrink-0">
+      <div className={`card p-4 sm:p-6 ${c.bg} ${c.border}`}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 mx-auto sm:mx-0">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
               <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.08)" strokeWidth="9" fill="none" />
               <circle
@@ -42,14 +42,14 @@ export default function BloodReport({ data }) {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={`text-3xl font-extrabold ${c.text}`}>{score}</span>
-              <span className="text-[10px] text-white/50 uppercase tracking-wider">/ 100</span>
+              <span className={`text-2xl sm:text-3xl font-extrabold ${c.text}`}>{score}</span>
+              <span className="text-[9px] sm:text-[10px] text-white/50 uppercase tracking-wider">/ 100</span>
             </div>
           </div>
-          <div>
+          <div className="text-center sm:text-left">
             <p className="text-xs uppercase tracking-wider text-white/50">Overall Health Score</p>
-            <h3 className={`text-2xl font-bold ${c.text}`}>{c.label}</h3>
-            <p className="text-sm text-white/60 mt-1 max-w-xl">
+            <h3 className={`text-xl sm:text-2xl font-bold ${c.text}`}>{c.label}</h3>
+            <p className="text-xs sm:text-sm text-white/60 mt-1 max-w-xl">
               Calculated from your reported biomarkers and profile. This is a directional indicator, not a diagnosis.
             </p>
           </div>
@@ -57,33 +57,33 @@ export default function BloodReport({ data }) {
       </div>
 
       <div className="card overflow-hidden">
-        <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-          <h3 className="font-semibold">Detected biomarkers</h3>
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/5 flex items-center justify-between">
+          <h3 className="font-semibold text-sm sm:text-base">Detected biomarkers</h3>
           <span className="text-xs text-white/40">{markers.length} marker{markers.length !== 1 && 's'}</span>
         </div>
         {markers.length === 0 ? (
-          <div className="p-6 text-white/50 text-sm">No biomarkers detected in the report. The plan is based on your profile alone.</div>
+          <div className="p-4 sm:p-6 text-white/50 text-sm">No biomarkers detected in the report. The plan is based on your profile alone.</div>
         ) : (
-          <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto scrollbar-thin -mx-px">
+            <table className="w-full text-xs sm:text-sm min-w-[480px]">
               <thead>
-                <tr className="text-left text-white/50 text-xs uppercase tracking-wider">
-                  <th className="px-6 py-3 font-medium">Marker</th>
-                  <th className="px-6 py-3 font-medium">Your value</th>
-                  <th className="px-6 py-3 font-medium">Normal range</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
+                <tr className="text-left text-white/50 text-[10px] sm:text-xs uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Marker</th>
+                  <th className="px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Your value</th>
+                  <th className="px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Normal range</th>
+                  <th className="px-3 sm:px-6 py-2.5 sm:py-3 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {markers.map((m, i) => (
                   <tr key={i} className="border-t border-white/5 hover:bg-white/[0.02]">
-                    <td className="px-6 py-3 font-medium">
+                    <td className="px-3 sm:px-6 py-2.5 sm:py-3 font-medium">
                       {m.name}
-                      {m.note && <div className="text-xs text-white/40 mt-0.5">{m.note}</div>}
+                      {m.note && <div className="text-[10px] sm:text-xs text-white/40 mt-0.5">{m.note}</div>}
                     </td>
-                    <td className="px-6 py-3 text-white/80">{m.value}</td>
-                    <td className="px-6 py-3 text-white/60">{m.normalRange}</td>
-                    <td className="px-6 py-3"><StatusBadge status={m.status} /></td>
+                    <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-white/80">{m.value}</td>
+                    <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-white/60">{m.normalRange}</td>
+                    <td className="px-3 sm:px-6 py-2.5 sm:py-3"><StatusBadge status={m.status} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -92,8 +92,8 @@ export default function BloodReport({ data }) {
         )}
       </div>
 
-      <div className="card p-6">
-        <h3 className="font-semibold mb-4">Key findings</h3>
+      <div className="card p-4 sm:p-6">
+        <h3 className="font-semibold mb-3 sm:mb-4">Key findings</h3>
         <ul className="space-y-2.5">
           {findings.map((f, i) => (
             <li key={i} className="flex gap-3 text-sm text-white/80">

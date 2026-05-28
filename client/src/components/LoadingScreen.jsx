@@ -35,29 +35,29 @@ export default function LoadingScreen() {
   }, []);
 
   return (
-    <section className="animate-fade-in max-w-xl mx-auto text-center pt-10">
-      <div className="relative w-28 h-28 mx-auto mb-8">
+    <section className="animate-fade-in max-w-xl mx-auto text-center pt-6 sm:pt-10 px-2 sm:px-0">
+      <div className="relative w-22 h-22 sm:w-28 sm:h-28 mx-auto mb-6 sm:mb-8" style={{ width: 'clamp(5rem, 15vw, 7rem)', height: 'clamp(5rem, 15vw, 7rem)' }}>
         <div className="absolute inset-0 rounded-full border-4 border-white/10" />
         <div
           className="absolute inset-0 rounded-full border-4 border-teal border-t-transparent animate-spin"
           style={{ animationDuration: '1.6s' }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-teal">{Math.round(progress)}%</span>
+          <span className="text-xl sm:text-2xl font-bold text-teal">{Math.round(progress)}%</span>
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold">{STEPS[stepIdx].label}</h2>
-      <p className="text-white/50 mt-2 text-sm">Hang tight — this normally takes 20-40 seconds.</p>
+      <h2 className="text-xl sm:text-2xl font-bold">{STEPS[stepIdx].label}</h2>
+      <p className="text-white/50 mt-1.5 sm:mt-2 text-xs sm:text-sm">Hang tight — this normally takes 20-40 seconds.</p>
 
-      <div className="mt-8 h-2 bg-white/5 rounded-full overflow-hidden">
+      <div className="mt-6 sm:mt-8 h-1.5 sm:h-2 bg-white/5 rounded-full overflow-hidden">
         <div
           className="h-full bg-gradient-to-r from-teal to-teal-light transition-all duration-200"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <ol className="mt-6 text-left space-y-1.5 text-sm">
+      <ol className="mt-5 sm:mt-6 text-left space-y-1.5 text-xs sm:text-sm">
         {STEPS.map((s, i) => (
           <li key={s.label} className={`flex items-center gap-2 ${i <= stepIdx ? 'text-white/90' : 'text-white/30'}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${i < stepIdx ? 'bg-teal' : i === stepIdx ? 'bg-teal animate-pulse' : 'bg-white/20'}`} />

@@ -54,39 +54,35 @@ export default function StatsBadge({ refreshKey = 0, variant = 'inline' }) {
 
   if (variant === 'hero') {
     return (
-      <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 animate-fade-in">
+      <div className="grid grid-cols-3 gap-3 sm:gap-10 animate-fade-in max-w-md sm:max-w-none mx-auto">
         <div className="flex flex-col items-center group">
           <div className="relative">
-            <div className="absolute -inset-3 bg-teal/10 rounded-2xl blur-lg group-hover:bg-teal/20 transition" />
-            <span className="relative text-4xl sm:text-5xl font-extrabold text-teal tabular-nums">
+            <div className="absolute -inset-2 sm:-inset-3 bg-teal/10 rounded-2xl blur-lg group-hover:bg-teal/20 transition" />
+            <span className="relative text-2xl sm:text-5xl font-extrabold text-teal tabular-nums">
               <AnimatedNumber target={stats.uniqueVisitors} />
             </span>
           </div>
-          <span className="text-[11px] uppercase tracking-widest text-white/40 mt-2 font-medium">Visitors</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider sm:tracking-widest text-white/40 mt-1.5 sm:mt-2 font-medium text-center leading-tight">Visitors</span>
         </div>
 
-        <div className="w-px h-10 bg-white/10" />
-
-        <div className="flex flex-col items-center group">
+        <div className="flex flex-col items-center group border-x border-white/10">
           <div className="relative">
-            <div className="absolute -inset-3 bg-emerald-500/10 rounded-2xl blur-lg group-hover:bg-emerald-500/20 transition" />
-            <span className="relative text-4xl sm:text-5xl font-extrabold text-emerald-300 tabular-nums">
+            <div className="absolute -inset-2 sm:-inset-3 bg-emerald-500/10 rounded-2xl blur-lg group-hover:bg-emerald-500/20 transition" />
+            <span className="relative text-2xl sm:text-5xl font-extrabold text-emerald-300 tabular-nums">
               <AnimatedNumber target={totalPlans} duration={1400} />
             </span>
           </div>
-          <span className="text-[11px] uppercase tracking-widest text-white/40 mt-2 font-medium">Plans generated</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider sm:tracking-widest text-white/40 mt-1.5 sm:mt-2 font-medium text-center leading-tight">Plans</span>
         </div>
-
-        <div className="w-px h-10 bg-white/10" />
 
         <div className="flex flex-col items-center group">
           <div className="relative">
-            <div className="absolute -inset-3 bg-violet-500/10 rounded-2xl blur-lg group-hover:bg-violet-500/20 transition" />
-            <span className="relative text-4xl sm:text-5xl font-extrabold text-violet-300 tabular-nums">
+            <div className="absolute -inset-2 sm:-inset-3 bg-violet-500/10 rounded-2xl blur-lg group-hover:bg-violet-500/20 transition" />
+            <span className="relative text-2xl sm:text-5xl font-extrabold text-violet-300 tabular-nums">
               <AnimatedNumber target={stats.reportsChecked || 0} duration={1000} />
             </span>
           </div>
-          <span className="text-[11px] uppercase tracking-widest text-white/40 mt-2 font-medium">Reports analyzed</span>
+          <span className="text-[9px] sm:text-[11px] uppercase tracking-wider sm:tracking-widest text-white/40 mt-1.5 sm:mt-2 font-medium text-center leading-tight">Reports</span>
         </div>
       </div>
     );

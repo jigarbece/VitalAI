@@ -88,12 +88,12 @@ export default function UserForm({
 
   return (
     <section className="animate-fade-in max-w-3xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold">{title}</h2>
-        <p className="text-white/60 mt-2">{subtitle}</p>
+      <div className="mb-5 sm:mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+        <p className="text-white/60 mt-1.5 sm:mt-2 text-sm sm:text-base">{subtitle}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card p-6 sm:p-8 space-y-7" noValidate>
+      <form onSubmit={handleSubmit} className="card p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-7" noValidate>
         <div>
           <label htmlFor="name" className="label">Full name</label>
           <input
@@ -106,7 +106,7 @@ export default function UserForm({
           {errors.name && <p className="text-red-300 text-xs mt-1">{errors.name}</p>}
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <div>
             <label htmlFor="age" className="label">Age</label>
             <input
@@ -165,7 +165,7 @@ export default function UserForm({
 
         <div>
           <label className="label">Diet preference</label>
-          <div className="grid sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {DIETS.map((d) => (
               <label key={d} className={`cursor-pointer px-4 py-2.5 rounded-xl text-sm border flex items-center gap-2 transition
                 ${profile.diet === d ? 'bg-teal/15 border-teal' : 'bg-navy-200 border-white/10 hover:border-white/20'}`}>
@@ -199,7 +199,7 @@ export default function UserForm({
 
         <div>
           <label className="label">Health goals <span className="text-white/40 font-normal">· select all that apply</span></label>
-          <div className="grid sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {GOALS.map((g) => {
               const active = profile.goals.includes(g);
               return (
