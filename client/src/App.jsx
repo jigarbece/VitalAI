@@ -7,7 +7,7 @@ import ResultDashboard from './components/ResultDashboard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import StatsBadge from './components/StatsBadge.jsx';
 import { ToastProvider, useToast } from './toast.jsx';
-import { analyzeReport, quickPlan } from './api.js';
+import { analyzeReport, quickPlan, extractProfile } from './api.js';
 
 // Phases:
 //   landing → upload → profile → loading → results       (report flow)
@@ -22,6 +22,8 @@ function AppShell() {
   const [file, setFile] = useState(null);
   const [profile, setProfile] = useState(null);
   const [result, setResult] = useState(null);
+  const [extractedProfile, setExtractedProfile] = useState(null);
+  const [extracting, setExtracting] = useState(false);
   const { show } = useToast();
 
   const reset = () => {
@@ -29,6 +31,7 @@ function AppShell() {
     setFile(null);
     setProfile(null);
     setResult(null);
+    setExtractedProfile(null);
   };
 
   const startReport = () => { setMode('report'); setPhase('upload'); };
@@ -106,14 +109,28 @@ function AppShell() {
           {phase === 'upload' && (
             <Uploader
               file={file}
-              onFileSelected={setFile}
-              onNext={() => setPhase('profile')}
+              onFileSelected={(f) => { setFile(f); setExtractedProfile(null); }}
+              onNext={async () => {
+                if (file) {
+                  setExtracting(true);
+                  try {
+                    const { extracted } = await extractProfile(file);
+                    if (extracted && Object.keys(extracted).length > 0) {
+                      setExtractedProfile(extracted);
+                      show('Pre-filled details from your report', 'success');
+                    }
+                  } catch (_) { /* silent — user fills manually */ }
+                  setExtracting(false);
+                }
+                setPhase('profile');
+              }}
               onBack={reset}
+              extracting={extracting}
             />
           )}
           {phase === 'profile' && (
             <UserForm
-              initial={profile}
+              initial={profile || extractedProfile}
               onSubmit={runReport}
               onBack={() => setPhase('upload')}
               submitLabel="Analyze Now"

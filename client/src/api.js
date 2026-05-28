@@ -26,6 +26,13 @@ export async function analyzeReport(file, profile) {
   return unwrap(res);
 }
 
+export async function extractProfile(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${API_URL}/api/extract-profile`, { method: 'POST', body: formData });
+  return unwrap(res);
+}
+
 export async function quickPlan(profile) {
   const res = await fetch(`${API_URL}/api/quick-plan`, {
     method: 'POST',

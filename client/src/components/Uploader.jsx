@@ -15,7 +15,7 @@ export function validateFile(file) {
   return null;
 }
 
-export default function Uploader({ file, onFileSelected, onNext, onBack }) {
+export default function Uploader({ file, onFileSelected, onNext, onBack, extracting = false }) {
   const inputRef = useRef(null);
   const [dragOver, setDragOver] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -133,10 +133,20 @@ export default function Uploader({ file, onFileSelected, onNext, onBack }) {
         <button onClick={onBack} className="btn-ghost w-full sm:w-auto">← Back</button>
         <button
           onClick={onNext}
-          disabled={!file || progress < 100}
+          disabled={!file || progress < 100 || extracting}
           className="btn-primary w-full sm:w-auto"
         >
-          Next: Your Profile →
+          {extracting ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Reading report...
+            </>
+          ) : (
+            'Next: Your Profile →'
+          )}
         </button>
       </div>
     </section>

@@ -8,6 +8,7 @@ import { createAnalyzeRouter } from './routes/analyze.js';
 import { createContactRouter } from './routes/contact.js';
 import { createStatsRouter } from './routes/stats.js';
 import { createQuickPlanRouter } from './routes/quickPlan.js';
+import { createExtractProfileRouter } from './routes/extractProfile.js';
 import { createStatsService } from './services/statsService.js';
 import { createMailService, buildDefaultTransporter } from './services/mailService.js';
 
@@ -62,6 +63,7 @@ a{color:#00D4AA}code{background:#141B30;padding:2px 6px;border-radius:4px;font-s
   });
 
   app.use(createStatsRouter({ stats }));
+  app.use(createExtractProfileRouter());
   app.use(createAnalyzeRouter({ stats }));
   app.use(createQuickPlanRouter({ stats }));
   app.use(createContactRouter({ mailService }));
