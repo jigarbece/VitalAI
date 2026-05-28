@@ -19,6 +19,8 @@ const GOALS = [
 
 export function validateUserProfile(profile) {
   const errors = {};
+  if (!profile.name || !profile.name.trim()) errors.name = 'Name is required';
+
   const age = Number(profile.age);
   if (!profile.age) errors.age = 'Age is required';
   else if (isNaN(age) || age < 5 || age > 120) errors.age = 'Age must be between 5 and 120';
@@ -40,6 +42,7 @@ export function validateUserProfile(profile) {
 }
 
 const DEFAULT_PROFILE = {
+  name: '',
   age: '',
   gender: '',
   weight: '',
@@ -91,6 +94,18 @@ export default function UserForm({
       </div>
 
       <form onSubmit={handleSubmit} className="card p-6 sm:p-8 space-y-7" noValidate>
+        <div>
+          <label htmlFor="name" className="label">Full name</label>
+          <input
+            id="name" type="text" maxLength="100"
+            value={profile.name}
+            onChange={(e) => update('name', e.target.value)}
+            className="input" placeholder="e.g. Jigar Pandya"
+            aria-invalid={!!errors.name}
+          />
+          {errors.name && <p className="text-red-300 text-xs mt-1">{errors.name}</p>}
+        </div>
+
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
             <label htmlFor="age" className="label">Age</label>

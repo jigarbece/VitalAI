@@ -58,7 +58,7 @@ export default function Landing({ onStartReport, onStartQuick }) {
           No account required. Quick Plan uses just your BMI &amp; goals — skip the upload.
         </p>
 
-        <div className="mt-6 flex justify-center"><StatsBadge /></div>
+        <div className="mt-10 mb-4"><StatsBadge variant="hero" /></div>
       </div>
 
       <div id="how-it-works" className="grid md:grid-cols-3 gap-5 pb-6">

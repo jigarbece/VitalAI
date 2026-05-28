@@ -6,6 +6,7 @@ import UserForm, { validateUserProfile } from '../components/UserForm.jsx';
 
 describe('validateUserProfile', () => {
   const base = {
+    name: 'Test User',
     age: '32',
     gender: 'Male',
     weight: '72',
@@ -55,6 +56,7 @@ describe('<UserForm />', () => {
     const onSubmit = vi.fn();
     render(<UserForm onSubmit={onSubmit} onBack={() => {}} />);
 
+    await user.type(screen.getByLabelText(/full name/i), 'Jane Doe');
     await user.type(screen.getByLabelText(/^age$/i), '30');
     await user.click(screen.getByLabelText('Female'));
     await user.type(screen.getByLabelText(/weight \(kg\)/i), '60');
