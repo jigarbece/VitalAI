@@ -30,19 +30,27 @@ export default function DietPlan({ data }) {
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <div className="card p-4 sm:p-5">
           <p className="text-[10px] sm:text-xs uppercase tracking-wider text-white/50">Daily calorie target</p>
-          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
-            <span className="text-2xl sm:text-4xl font-extrabold text-teal">{calories.toLocaleString()}</span>
-            <span className="text-xs sm:text-sm text-white/60">kcal</span>
-          </div>
-          <p className="text-[10px] sm:text-xs text-white/50 mt-1.5 sm:mt-2 hidden sm:block">Calibrated from your weight, height, activity, and goals.</p>
+          {calories ? (
+            <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
+              <span className="text-2xl sm:text-4xl font-extrabold text-teal">{calories.toLocaleString()}</span>
+              <span className="text-xs sm:text-sm text-white/60">kcal</span>
+            </div>
+          ) : (
+            <p className="text-white/50 text-sm mt-2">Add your weight &amp; height for a calorie target.</p>
+          )}
+          {calories ? <p className="text-[10px] sm:text-xs text-white/50 mt-1.5 sm:mt-2 hidden sm:block">Calibrated from your weight, height, activity, and goals.</p> : null}
         </div>
         <div className="card p-4 sm:p-5">
           <p className="text-[10px] sm:text-xs uppercase tracking-wider text-white/50">Body Mass Index</p>
-          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
-            <span className="text-2xl sm:text-4xl font-extrabold">{bmi}</span>
-            <span className={`text-xs sm:text-sm font-semibold ${bmiColor(bmiCategory)}`}>{bmiCategory}</span>
-          </div>
-          <p className="text-[10px] sm:text-xs text-white/50 mt-1.5 sm:mt-2 hidden sm:block">Normal range: 18.5 – 24.9</p>
+          {bmi ? (
+            <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1">
+              <span className="text-2xl sm:text-4xl font-extrabold">{bmi}</span>
+              <span className={`text-xs sm:text-sm font-semibold ${bmiColor(bmiCategory)}`}>{bmiCategory}</span>
+            </div>
+          ) : (
+            <p className="text-white/50 text-sm mt-2">Add your weight &amp; height to calculate BMI.</p>
+          )}
+          {bmi ? <p className="text-[10px] sm:text-xs text-white/50 mt-1.5 sm:mt-2 hidden sm:block">Normal range: 18.5 – 24.9</p> : null}
         </div>
       </div>
 

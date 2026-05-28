@@ -17,6 +17,27 @@ function hashFingerprint(ip, userAgent) {
     .slice(0, 24);
 }
 
+/**
+ * Parse STATS_BASELINE env var.
+ * Format: "visitors:10,visits:25,reports:3,quickPlans:5"
+ * This lets you preserve counts across Render deploys (ephemeral disk).
+ */
+function loadBaseline() {
+  const raw = process.env.STATS_BASELINE || '';
+  const base = { uniqueVisitors: 0, totalVisits: 0, reportsChecked: 0, quickPlansChecked: 0 };
+  if (!raw) return base;
+  for (const pair of raw.split(',')) {
+    const [key, val] = pair.split(':').map((s) => s.trim());
+    const n = parseInt(val, 10);
+    if (isNaN(n)) continue;
+    if (key === 'visitors') base.uniqueVisitors = n;
+    else if (key === 'visits') base.totalVisits = n;
+    else if (key === 'reports') base.reportsChecked = n;
+    else if (key === 'quickPlans') base.quickPlansChecked = n;
+  }
+  return base;
+}
+
 async function loadState(filePath) {
   try {
     const raw = await fs.readFile(filePath, 'utf-8');
@@ -40,6 +61,7 @@ async function saveState(filePath, state) {
 export async function createStatsService({ filePath }) {
   if (!filePath) throw new Error('filePath is required');
 
+  const baseline = loadBaseline();
   let state = await loadState(filePath);
   let visitorSet = new Set(state.uniqueVisitorHashes);
   let writeChain = Promise.resolve();
@@ -68,10 +90,10 @@ export async function createStatsService({ filePath }) {
     },
     async getStats() {
       return {
-        uniqueVisitors: visitorSet.size,
-        totalVisits: state.totalVisits,
-        reportsChecked: state.reportsChecked,
-        quickPlansChecked: state.quickPlansChecked,
+        uniqueVisitors: visitorSet.size + baseline.uniqueVisitors,
+        totalVisits: state.totalVisits + baseline.totalVisits,
+        reportsChecked: state.reportsChecked + baseline.reportsChecked,
+        quickPlansChecked: state.quickPlansChecked + baseline.quickPlansChecked,
       };
     },
   };

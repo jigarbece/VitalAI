@@ -1,18 +1,18 @@
 import express from 'express';
 import { generateHealthPlan as defaultGenerate } from '../services/aiService.js';
 
-const REQUIRED = ['age', 'gender', 'weight', 'height', 'diet', 'activity'];
+const DEFAULT_HEIGHT_CM = 155;
 
 function validateProfile(profile) {
   if (!profile || typeof profile !== 'object') return 'userProfile is required';
-  for (const f of REQUIRED) {
-    if (profile[f] === undefined || profile[f] === null || profile[f] === '') {
-      return `userProfile.${f} is required`;
-    }
-  }
+  if (profile.age === undefined || profile.age === null || profile.age === '') return 'userProfile.age is required';
   if (!(Number(profile.age) > 0)) return 'userProfile.age must be a positive number';
+  if (profile.weight === undefined || profile.weight === null || profile.weight === '') return 'userProfile.weight is required';
   if (!(Number(profile.weight) > 0)) return 'userProfile.weight must be a positive number';
-  if (!(Number(profile.height) > 0)) return 'userProfile.height must be a positive number';
+  // Height is optional — defaults to 155 cm if blank
+  if (profile.height !== undefined && profile.height !== '' && profile.height !== null) {
+    if (!(Number(profile.height) > 0)) return 'userProfile.height must be a positive number';
+  }
   return null;
 }
 
@@ -21,7 +21,9 @@ function coerce(profile) {
     ...profile,
     age: Number(profile.age),
     weight: Number(profile.weight),
-    height: Number(profile.height),
+    height: (profile.height !== undefined && profile.height !== '' && profile.height !== null)
+      ? Number(profile.height)
+      : DEFAULT_HEIGHT_CM,
     goals: Array.isArray(profile.goals) ? profile.goals : [],
     conditions: profile.conditions || '',
   };

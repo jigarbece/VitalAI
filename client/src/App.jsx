@@ -46,7 +46,7 @@ function AppShell() {
     setPhase('loading');
     try {
       const data = await analyzeReport(file, submittedProfile);
-      setResult({ ...data, _mode: 'report' });
+      setResult({ ...data, _mode: 'report', name: submittedProfile.name || '' });
       setPhase('results');
       show('Analysis complete', 'success');
     } catch (err) {
@@ -60,7 +60,7 @@ function AppShell() {
     setPhase('loading');
     try {
       const data = await quickPlan(submittedProfile);
-      setResult({ ...data, _mode: 'quick' });
+      setResult({ ...data, _mode: 'quick', name: submittedProfile.name || '' });
       setPhase('results');
       show('Plan ready', 'success');
     } catch (err) {

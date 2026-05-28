@@ -25,18 +25,18 @@ export function validateUserProfile(profile) {
   if (!profile.age) errors.age = 'Age is required';
   else if (isNaN(age) || age < 5 || age > 120) errors.age = 'Age must be between 5 and 120';
 
-  if (!profile.gender) errors.gender = 'Select a gender';
-
-  const weight = Number(profile.weight);
+  // Weight is required
   if (!profile.weight) errors.weight = 'Weight is required';
-  else if (isNaN(weight) || weight < 20 || weight > 400) errors.weight = 'Weight must be between 20 and 400 kg';
+  else {
+    const weight = Number(profile.weight);
+    if (isNaN(weight) || weight < 20 || weight > 400) errors.weight = 'Weight must be between 20 and 400 kg';
+  }
 
-  const height = Number(profile.height);
-  if (!profile.height) errors.height = 'Height is required';
-  else if (isNaN(height) || height < 80 || height > 250) errors.height = 'Height must be between 80 and 250 cm';
-
-  if (!profile.diet) errors.diet = 'Pick a diet preference';
-  if (!profile.activity) errors.activity = 'Pick an activity level';
+  // Height is optional — only validate range if provided
+  if (profile.height) {
+    const height = Number(profile.height);
+    if (isNaN(height) || height < 80 || height > 250) errors.height = 'Height must be between 80 and 250 cm';
+  }
 
   return errors;
 }
@@ -91,11 +91,12 @@ export default function UserForm({
       <div className="mb-5 sm:mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
         <p className="text-white/60 mt-1.5 sm:mt-2 text-sm sm:text-base">{subtitle}</p>
+        <p className="text-white/40 text-xs mt-1">Fields marked <span className="text-teal">*</span> are required. Everything else is optional — more details = better plan.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="card p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-7" noValidate>
         <div>
-          <label htmlFor="name" className="label">Full name</label>
+          <label htmlFor="name" className="label">Full name <span className="text-teal">*</span></label>
           <input
             id="name" type="text" maxLength="100"
             value={profile.name}
@@ -108,7 +109,7 @@ export default function UserForm({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <div>
-            <label htmlFor="age" className="label">Age</label>
+            <label htmlFor="age" className="label">Age <span className="text-teal">*</span></label>
             <input
               id="age" type="number" inputMode="numeric" min="5" max="120"
               value={profile.age}
@@ -120,7 +121,7 @@ export default function UserForm({
           </div>
 
           <div>
-            <label className="label">Gender</label>
+            <label className="label">Gender <span className="text-white/40 font-normal text-xs">· optional</span></label>
             <div className="flex gap-2">
               {GENDERS.map((g) => (
                 <label key={g} className={`flex-1 cursor-pointer px-3 py-2 rounded-xl text-center text-sm border transition
@@ -139,7 +140,7 @@ export default function UserForm({
           </div>
 
           <div>
-            <label htmlFor="weight" className="label">Weight (kg)</label>
+            <label htmlFor="weight" className="label">Weight (kg) <span className="text-teal">*</span></label>
             <input
               id="weight" type="number" inputMode="decimal" min="20" max="400" step="0.1"
               value={profile.weight}
@@ -151,12 +152,12 @@ export default function UserForm({
           </div>
 
           <div>
-            <label htmlFor="height" className="label">Height (cm)</label>
+            <label htmlFor="height" className="label">Height (cm) <span className="text-white/40 font-normal text-xs">· optional, default 155</span></label>
             <input
               id="height" type="number" inputMode="numeric" min="80" max="250"
               value={profile.height}
               onChange={(e) => update('height', e.target.value)}
-              className="input" placeholder="e.g. 175"
+              className="input" placeholder="e.g. 175 (default: 155)"
               aria-invalid={!!errors.height}
             />
             {errors.height && <p className="text-red-300 text-xs mt-1">{errors.height}</p>}
@@ -164,7 +165,7 @@ export default function UserForm({
         </div>
 
         <div>
-          <label className="label">Diet preference</label>
+          <label className="label">Diet preference <span className="text-white/40 font-normal text-xs">· optional</span></label>
           <div className="grid grid-cols-2 gap-2">
             {DIETS.map((d) => (
               <label key={d} className={`cursor-pointer px-4 py-2.5 rounded-xl text-sm border flex items-center gap-2 transition
@@ -182,7 +183,7 @@ export default function UserForm({
         </div>
 
         <div>
-          <label htmlFor="activity" className="label">Activity level</label>
+          <label htmlFor="activity" className="label">Activity level <span className="text-white/40 font-normal text-xs">· optional</span></label>
           <select
             id="activity"
             value={profile.activity}

@@ -6,31 +6,35 @@ import { generateHealthPlan as defaultGenerate } from '../services/aiService.js'
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
-const REQUIRED_PROFILE_FIELDS = ['age', 'gender', 'weight', 'height', 'diet', 'activity'];
+const DEFAULT_HEIGHT_CM = 155;
 
 function validateProfile(profile) {
   if (!profile || typeof profile !== 'object') return 'userProfile is required';
-  for (const f of REQUIRED_PROFILE_FIELDS) {
-    if (profile[f] === undefined || profile[f] === null || profile[f] === '') {
-      return `userProfile.${f} is required`;
-    }
+  // Required fields
+  if (profile.age === undefined || profile.age === null || profile.age === '') return 'userProfile.age is required';
+  const age = Number(profile.age);
+  if (isNaN(age) || age <= 0) return 'userProfile.age must be a positive number';
+  if (profile.weight === undefined || profile.weight === null || profile.weight === '') return 'userProfile.weight is required';
+  if (!(Number(profile.weight) > 0)) return 'userProfile.weight must be a positive number';
+  // Height is optional — defaults to 155 cm if blank
+  if (profile.height !== undefined && profile.height !== '' && profile.height !== null) {
+    if (!(Number(profile.height) > 0)) return 'userProfile.height must be a positive number';
   }
-  const num = (v) => typeof v === 'number' && !isNaN(v) && v > 0;
-  if (!num(Number(profile.age))) return 'userProfile.age must be a positive number';
-  if (!num(Number(profile.weight))) return 'userProfile.weight must be a positive number';
-  if (!num(Number(profile.height))) return 'userProfile.height must be a positive number';
   return null;
 }
 
 function coerceProfile(profile) {
-  return {
+  const coerced = {
     ...profile,
     age: Number(profile.age),
     weight: Number(profile.weight),
-    height: Number(profile.height),
+    height: (profile.height !== undefined && profile.height !== '' && profile.height !== null)
+      ? Number(profile.height)
+      : DEFAULT_HEIGHT_CM,
     goals: Array.isArray(profile.goals) ? profile.goals : [],
     conditions: profile.conditions || '',
   };
+  return coerced;
 }
 
 export function createAnalyzeRouter(deps = {}) {

@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 const JSON_SCHEMA_HINT = `{
+  "plainSummary": "<2-3 sentence plain English summary a non-medical person can immediately understand — what their results mean, one thing to improve, one positive>",
   "healthScore": <number 0-100>,
   "bloodMarkers": [
     {
@@ -10,13 +11,13 @@ const JSON_SCHEMA_HINT = `{
       "value": "<detected value with unit>",
       "normalRange": "<range>",
       "status": "normal|high|low|borderline",
-      "note": "<brief explanation>"
+      "note": "<brief plain English explanation>"
     }
   ],
   "keyFindings": ["<finding 1>", "<finding 2>", "<finding 3>"],
-  "bmi": <number>,
-  "bmiCategory": "Underweight|Normal|Overweight|Obese",
-  "dailyCalories": <number>,
+  "bmi": <number or null if weight/height not provided>,
+  "bmiCategory": "Underweight|Normal|Overweight|Obese|Unknown",
+  "dailyCalories": <number or null if weight/height not provided>,
   "dietPlan": {
     "breakfast":    { "name": "", "description": "", "calories": 0, "nutrients": "" },
     "morningSnack": { "name": "", "description": "", "calories": 0, "nutrients": "" },
@@ -51,6 +52,13 @@ export function buildPrompt(reportText, profile) {
     ? `Blood Report Text:\n"""\n${reportText.trim()}\n"""`
     : `Blood Report Text: The blood report could not be extracted from the uploaded file. Please generate a plan based only on the user profile, and explicitly note in keyFindings that the report could not be parsed.`;
 
+  // Build optional profile lines — skip if not provided
+  const weightLine = profile.weight ? `- Weight: ${profile.weight}kg` : '- Weight: Not provided';
+  const heightLine = profile.height ? `- Height: ${profile.height}cm` : '- Height: Not provided';
+  const genderLine = profile.gender ? `- Gender: ${profile.gender}` : '- Gender: Not provided';
+  const dietLine = profile.diet ? `- Diet: ${profile.diet}` : '- Diet: Not specified (assume balanced)';
+  const activityLine = profile.activity ? `- Activity Level: ${profile.activity}` : '- Activity Level: Not specified (assume moderately active)';
+
   return `You are VitalAI, an expert health analyst. You have received a blood test report and user profile.
 Analyze the blood report (if available) together with the user profile and return a STRICT JSON response.
 
@@ -58,17 +66,18 @@ ${reportSection}
 
 User Profile:
 - Age: ${profile.age}
-- Gender: ${profile.gender}
-- Weight: ${profile.weight}kg
-- Height: ${profile.height}cm
-- Diet: ${profile.diet}
-- Activity Level: ${profile.activity}
+${genderLine}
+${weightLine}
+${heightLine}
+${dietLine}
+${activityLine}
 - Goals: ${goals}
 - Known Conditions: ${conditions}
 
 Rules:
-- Personalize the diet plan to the user's stated diet preference. If "Vegetarian", do not include meat or fish. If "Vegan", no animal products. If "Eggetarian", eggs allowed but no meat/fish. If "Non-Vegetarian", any food.
-- Daily calories must match the user's goals and activity level using Mifflin-St Jeor + activity multiplier.
+- Write plainSummary in simple everyday English (no medical jargon) — 2 to 3 sentences max. Start with what their overall health looks like, mention one concern, and end with an encouraging action. Address the user as "you".
+- Personalize the diet plan to the user's stated diet preference. If "Vegetarian", do not include meat or fish. If "Vegan", no animal products. If "Eggetarian", eggs allowed but no meat/fish. If "Non-Vegetarian", any food. If diet is not specified, use a balanced plan.
+- Daily calories must match the user's goals and activity level using Mifflin-St Jeor + activity multiplier. If weight/height are missing, skip BMI and calorie fields (set to null).
 - Special notes in the exercise plan must reflect findings in the blood report (e.g. low iron => avoid high intensity).
 - Foods to avoid must reflect blood-report findings and known conditions.
 - Health score is an overall 0-100 assessment.
@@ -190,8 +199,11 @@ export function generateMockPlan(profile) {
     'Cholesterol is borderline - reduce saturated fats and increase fiber.',
   ];
 
+  const plainSummary = `Your health score is 72/100, which is a good starting point. Your hemoglobin and vitamin D are a bit low, so adding iron-rich foods like spinach or lentils and getting some daily sunlight will help. Keep it up — small changes each day add up to big results!`;
+
   return {
     healthScore: 72,
+    plainSummary,
     bloodMarkers,
     keyFindings,
     bmi,
@@ -249,12 +261,20 @@ export async function generateHealthPlan(reportText, profile, options = {}) {
 
 function normalizePlan(plan, profile) {
   if (typeof plan.bmi !== 'number' || isNaN(plan.bmi)) {
-    plan.bmi = computeBmi(profile.weight, profile.height);
+    plan.bmi = (profile.weight && profile.height) ? computeBmi(profile.weight, profile.height) : null;
   }
-  if (!plan.bmiCategory) plan.bmiCategory = categorizeBmi(plan.bmi);
-  if (typeof plan.dailyCalories !== 'number') plan.dailyCalories = computeCalories(profile);
+  if (!plan.bmiCategory) plan.bmiCategory = plan.bmi ? categorizeBmi(plan.bmi) : 'Unknown';
+  if (typeof plan.dailyCalories !== 'number') {
+    plan.dailyCalories = (profile.weight && profile.height) ? computeCalories(profile) : null;
+  }
   if (!Array.isArray(plan.bloodMarkers)) plan.bloodMarkers = [];
   if (!Array.isArray(plan.keyFindings)) plan.keyFindings = [];
+  // Ensure plainSummary always exists
+  if (!plan.plainSummary || typeof plan.plainSummary !== 'string') {
+    const score = plan.healthScore || 0;
+    const label = score >= 80 ? 'great' : score >= 60 ? 'good' : score >= 40 ? 'fair' : 'something that needs attention';
+    plan.plainSummary = `Your overall health score is ${score}/100 — that's ${label}. Review the key findings below for specific areas to focus on. Small daily improvements can make a big difference over time.`;
+  }
   return plan;
 }
 
