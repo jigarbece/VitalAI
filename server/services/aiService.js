@@ -1,6 +1,9 @@
+import Groq from 'groq-sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const DEFAULT_GROQ_MODEL  = process.env.GROQ_MODEL    || 'llama-3.3-70b-versatile';
+const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL  || 'gemini-1.5-flash';
+
 
 const JSON_SCHEMA_HINT = `{
   "plainSummary": "<2-3 sentence plain English summary a non-medical person can immediately understand — what their results mean, one thing to improve, one positive>",
@@ -279,17 +282,40 @@ function normalizePlan(plan, profile) {
 }
 
 function createDefaultClient(apiKey) {
-  const key = apiKey || process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  const genAI = new GoogleGenerativeAI(key);
-  const model = genAI.getGenerativeModel({
-    model: DEFAULT_MODEL,
-    generationConfig: { responseMimeType: 'application/json', temperature: 0.4 },
-  });
-  return {
-    async generateContent(prompt) {
-      const result = await model.generateContent(prompt);
-      return result.response.text();
-    },
-  };
+  // ── Groq (primary) ──────────────────────────────────────────────
+  const groqKey = apiKey || process.env.GROQ_API_KEY;
+  if (groqKey) {
+    const groq = new Groq({ apiKey: groqKey });
+    return {
+      async generateContent(prompt) {
+        const completion = await groq.chat.completions.create({
+          model: DEFAULT_GROQ_MODEL,
+          messages: [{ role: 'user', content: prompt }],
+          response_format: { type: 'json_object' },
+          temperature: 0.4,
+          max_tokens: 4096,
+        });
+        return completion.choices[0]?.message?.content ?? '';
+      },
+    };
+  }
+
+  // ── Gemini (fallback if no Groq key) ────────────────────────────
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({
+      model: DEFAULT_GEMINI_MODEL,
+      generationConfig: { responseMimeType: 'application/json', temperature: 0.4 },
+    });
+    return {
+      async generateContent(prompt) {
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+      },
+    };
+  }
+
+  // No key configured at all
+  return null;
 }
