@@ -79,7 +79,10 @@ function AppShell() {
                 <path d="M3 12h4l3 8 4-16 3 8h4" />
               </svg>
             </span>
-            <span className="font-extrabold text-base sm:text-lg tracking-tight">Vital<span className="text-teal">AI</span></span>
+            <div className="flex flex-col leading-none">
+              <span className="font-extrabold text-base sm:text-lg tracking-tight">Vital<span className="text-teal">AI</span></span>
+              <span className="text-[8px] sm:text-[9px] text-white/35 tracking-widest uppercase font-medium">by Jigar Pandya</span>
+            </div>
           </button>
 
           {showProgress && (

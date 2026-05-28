@@ -89,6 +89,10 @@ export function createAnalyzeRouter(deps = {}) {
         extractedText = '';
       }
 
+      // Log extraction stats for debugging multi-page reports
+      // eslint-disable-next-line no-console
+      console.log(`[analyze] Extracted ${extractedText.length} chars from ${isPdf ? 'PDF' : 'image'} (${req.file.originalname}, ${(req.file.size / 1024).toFixed(1)}KB)`);
+
       try {
         const plan = await generateHealthPlan(extractedText, coerced, { allowFallback: true });
         if (stats?.recordReportChecked) {

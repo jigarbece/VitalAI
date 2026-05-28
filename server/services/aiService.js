@@ -51,8 +51,9 @@ export function buildPrompt(reportText, profile) {
     ? profile.conditions.trim()
     : 'None reported';
 
-  const reportSection = reportText && reportText.trim().length >= 10
-    ? `Blood Report Text:\n"""\n${reportText.trim()}\n"""`
+  const cleanedReport = reportText ? reportText.trim() : '';
+  const reportSection = cleanedReport.length >= 10
+    ? `Blood Report Text (IMPORTANT — this may span multiple pages, analyze ALL markers from every page, not just the first page):\n"""\n${cleanedReport}\n"""`
     : `Blood Report Text: The blood report could not be extracted from the uploaded file. Please generate a plan based only on the user profile, and explicitly note in keyFindings that the report could not be parsed.`;
 
   // Build optional profile lines — skip if not provided
@@ -78,12 +79,13 @@ ${activityLine}
 - Known Conditions: ${conditions}
 
 Rules:
+- CRITICAL: Read the ENTIRE blood report text carefully. Reports often span multiple pages — extract EVERY biomarker from ALL pages (CBC, lipid panel, liver function, thyroid, vitamins, minerals, urine, etc.). Do NOT stop after the first few markers.
 - Write plainSummary in simple everyday English (no medical jargon) — 2 to 3 sentences max. Start with what their overall health looks like, mention one concern, and end with an encouraging action. Address the user as "you".
 - Personalize the diet plan to the user's stated diet preference. If "Vegetarian", do not include meat or fish. If "Vegan", no animal products. If "Eggetarian", eggs allowed but no meat/fish. If "Non-Vegetarian", any food. If diet is not specified, use a balanced plan.
 - Daily calories must match the user's goals and activity level using Mifflin-St Jeor + activity multiplier. If weight/height are missing, skip BMI and calorie fields (set to null).
 - Special notes in the exercise plan must reflect findings in the blood report (e.g. low iron => avoid high intensity).
 - Foods to avoid must reflect blood-report findings and known conditions.
-- Health score is an overall 0-100 assessment.
+- Health score is an overall 0-100 assessment based on ALL markers found, not just the first few.
 
 Return ONLY valid JSON (no markdown fencing, no explanation) in this exact structure:
 ${JSON_SCHEMA_HINT}`;
