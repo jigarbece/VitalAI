@@ -21,14 +21,14 @@ describe('validateUserProfile', () => {
     expect(validateUserProfile(base)).toEqual({});
   });
 
-  it('rejects empty required fields', () => {
+  it('rejects empty required fields while allowing optional fields', () => {
     const errs = validateUserProfile({ ...base, age: '', gender: '', weight: '', height: '', diet: '', activity: '' });
     expect(errs.age).toBeDefined();
-    expect(errs.gender).toBeDefined();
     expect(errs.weight).toBeDefined();
-    expect(errs.height).toBeDefined();
-    expect(errs.diet).toBeDefined();
-    expect(errs.activity).toBeDefined();
+    expect(errs.gender).toBeUndefined();
+    expect(errs.height).toBeUndefined();
+    expect(errs.diet).toBeUndefined();
+    expect(errs.activity).toBeUndefined();
   });
 
   it('rejects out-of-range age', () => {
@@ -57,7 +57,7 @@ describe('<UserForm />', () => {
     render(<UserForm onSubmit={onSubmit} onBack={() => {}} />);
 
     await user.type(screen.getByLabelText(/full name/i), 'Jane Doe');
-    await user.type(screen.getByLabelText(/^age$/i), '30');
+    await user.type(screen.getByLabelText(/^age/i), '30');
     await user.click(screen.getByLabelText('Female'));
     await user.type(screen.getByLabelText(/weight \(kg\)/i), '60');
     await user.type(screen.getByLabelText(/height \(cm\)/i), '165');

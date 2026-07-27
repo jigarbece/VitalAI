@@ -5,23 +5,23 @@ export default {
     extend: {
       colors: {
         navy: {
-          DEFAULT: '#0A0F1E',
-          50: '#1A2238',
-          100: '#141B30',
-          200: '#0F1626',
-          900: '#06091A',
+          DEFAULT: '#07111F',
+          50: '#172B45',
+          100: '#10243A',
+          200: '#0B1B2D',
+          900: '#040A12',
         },
         teal: {
-          DEFAULT: '#00D4AA',
-          dark: '#00B894',
-          light: '#33DDB9',
+          DEFAULT: '#2563EB',
+          dark: '#1D4ED8',
+          light: '#60A5FA',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        glow: '0 0 24px rgba(0, 212, 170, 0.25)',
+        glow: '0 12px 32px rgba(37, 99, 235, 0.18)',
       },
       animation: {
         'fade-in': 'fadeIn 0.4s ease-out',

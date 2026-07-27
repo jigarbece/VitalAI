@@ -1,4 +1,5 @@
 import React from 'react';
+import WeeklyDietPlan from './WeeklyDietPlan.jsx';
 
 const MEAL_ORDER = [
   ['breakfast', 'Breakfast', '🌅'],
@@ -19,6 +20,9 @@ function bmiColor(category) {
 }
 
 export default function DietPlan({ data }) {
+  if (data.weeklyDietPlan?.days?.length === 7) {
+    return <WeeklyDietPlan plan={data.weeklyDietPlan} />;
+  }
   const plan = data.dietPlan || {};
   const calories = data.dailyCalories || 0;
   const bmi = data.bmi || 0;

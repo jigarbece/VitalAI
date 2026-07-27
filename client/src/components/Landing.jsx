@@ -2,74 +2,99 @@ import React from 'react';
 import StatsBadge from './StatsBadge.jsx';
 
 const FEATURES = [
-  {
-    title: 'Blood Analysis',
-    description: 'Upload a PDF or scan of your blood report and we surface every biomarker with normal-range context.',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6"/><path d="M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7z"/></svg>
-    ),
-  },
-  {
-    title: 'Personalized Diet Plan',
-    description: 'A meal-by-meal plan calibrated to your diet preference, BMI, and the deficiencies in your blood.',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11h18"/><path d="M5 11a7 7 0 0 1 14 0"/><path d="M3 11v3a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-3"/></svg>
-    ),
-  },
-  {
-    title: 'Weekly Exercise Plan',
-    description: 'A Monday-to-Sunday workout schedule with intensity tuned to your goals and any health flags.',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4v16"/><path d="M18 4v16"/><path d="M3 8h3"/><path d="M3 16h3"/><path d="M18 8h3"/><path d="M18 16h3"/><path d="M6 12h12"/></svg>
-    ),
-  },
+  ['01', 'Decode your reports', 'See biomarkers, ranges, and important findings in language you can understand.'],
+  ['02', 'Build your food plan', 'Get realistic meals shaped by your body, preferences, routine, and goals.'],
+  ['03', 'Track what improves', 'Connect reports, nutrition, exercise, hydration, and progress over time.'],
 ];
 
-export default function Landing({ onStartReport, onStartQuick }) {
+export default function Landing({ onStartReport, onStartQuick, onDemo }) {
   return (
     <section className="animate-fade-in">
-      <div className="text-center max-w-3xl mx-auto pt-8 pb-14">
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal/10 border border-teal/30 text-teal text-xs font-semibold tracking-wide uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" /> AI-powered health analysis
-        </span>
-        <h1 className="mt-6 text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">
-          Upload your blood report.
-          <br />
-          <span className="bg-gradient-to-r from-teal via-teal-light to-emerald-300 text-transparent bg-clip-text">
-            Get your personalized health plan.
-          </span>
-        </h1>
-        <p className="mt-4 sm:mt-6 text-white/70 text-base sm:text-lg leading-relaxed px-2 sm:px-0">
-          VitalAI reads your lab values, weighs them against your profile, and returns a tailored
-          diet and exercise plan in under a minute.
-        </p>
+      <div className="relative isolate overflow-hidden rounded-[2.25rem] border border-blue-300/15 bg-gradient-to-br from-navy-100/95 via-navy-200/95 to-blue-950/40 shadow-[0_30px_90px_rgba(0,0,0,.30)]">
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-blue-700 via-sky-400 to-cyan-300" />
+        <div className="absolute -right-32 -top-40 h-[30rem] w-[30rem] rounded-full bg-blue-500/15 blur-3xl" />
+        <div className="absolute -bottom-48 left-1/3 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
 
-        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center px-4 sm:px-0">
-          <button onClick={onStartReport} className="btn-primary text-sm sm:text-base w-full sm:w-auto">
-            Analyze My Report
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </button>
-          <button onClick={onStartQuick} className="btn-ghost text-sm sm:text-base w-full sm:w-auto">
-            Quick Plan — no report
-            <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-teal/20 text-teal border border-teal/30">BMI</span>
-          </button>
+        <div className="relative grid min-h-[610px] items-center gap-10 px-6 py-14 sm:px-10 lg:grid-cols-[1.08fr_.92fr] lg:px-16">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-400/10 px-3.5 py-2 text-xs font-bold tracking-wide text-blue-300">
+              <span className="h-2 w-2 rounded-full bg-blue-600 shadow-[0_0_0_5px_rgba(37,99,235,.10)]" />
+              YOUR PERSONAL HEALTH & NUTRITION COMPANION
+            </div>
+
+            <h1 className="mt-7 text-[2.75rem] font-extrabold leading-[1.02] tracking-[-.055em] text-white sm:text-6xl lg:text-[4.4rem]">
+              From health reports
+              <span className="block bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                to healthier days.
+              </span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-7 text-white/65 sm:text-lg">
+              Understand what your reports say, discover food that supports your goals,
+              and follow a practical wellness plan made around you.
+            </p>
+
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <button onClick={onStartReport} className="btn-primary min-h-12 w-full px-7 sm:w-auto">
+                Analyze my report <span aria-hidden="true">→</span>
+              </button>
+              <button onClick={onStartQuick} className="btn-ghost min-h-12 w-full px-7 sm:w-auto">
+                Create a quick plan
+              </button>
+            </div>
+            <button onClick={onDemo} className="mt-4 text-sm font-semibold text-blue-300 hover:text-blue-200">Explore with demo data →</button>
+
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium text-white/50">
+              {['Private & secure', 'No account required', 'Wellness guidance, not diagnosis'].map((item) => (
+                <span key={item} className="flex items-center gap-2">
+                  <span className="grid h-4 w-4 place-items-center rounded-full bg-blue-100 text-[9px] font-black text-blue-700">✓</span>{item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative mx-auto h-[440px] w-full max-w-[470px]">
+            <div className="absolute left-8 top-5 w-[82%] rotate-[-2deg] rounded-[1.8rem] border border-blue-300/15 bg-navy-100 p-6 shadow-[0_24px_70px_rgba(0,0,0,.28)] sm:left-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[.2em] text-blue-500">Health report summary</p>
+                  <h2 className="mt-1 text-xl font-bold text-white">Your wellness picture</h2>
+                </div>
+                <div className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-sky-400 text-xl font-black text-blue-50 shadow-lg shadow-blue-200">82</div>
+              </div>
+              <div className="mt-6 space-y-4">
+                {[['Hemoglobin', '13.2 g/dL', '74%'], ['Vitamin D', '22 ng/mL', '45%'], ['Glucose', '92 mg/dL', '88%']].map(([name, value, width]) => (
+                  <div key={name}>
+                    <div className="mb-1.5 flex justify-between text-xs"><span className="font-semibold text-white/80">{name}</span><span className="text-white/50">{value}</span></div>
+                    <div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400" style={{ width }} /></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="absolute bottom-6 left-0 w-56 rounded-2xl border border-blue-300/15 bg-navy-100 p-4 shadow-[0_18px_45px_rgba(0,0,0,.25)]">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-500">Today’s nutrition</p>
+              <p className="mt-2 font-bold text-white">Protein-rich lunch</p>
+              <p className="mt-1 text-xs leading-5 text-white/55">Dal, greens, brown rice & fresh salad</p>
+              <div className="mt-3 flex gap-2 text-[10px] font-bold text-blue-700"><span className="rounded-full bg-blue-50 px-2 py-1">520 kcal</span><span className="rounded-full bg-sky-50 px-2 py-1">24g protein</span></div>
+            </div>
+
+            <div className="absolute bottom-2 right-0 w-44 rounded-2xl bg-blue-700 p-4 text-blue-50 shadow-[0_18px_45px_rgba(29,78,216,.28)]">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-200">Next healthy step</p>
+              <p className="mt-2 text-sm font-semibold leading-5 text-blue-50">25 minute walk after dinner</p>
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/20"><div className="h-full w-3/4 rounded-full bg-cyan-300" /></div>
+            </div>
+          </div>
         </div>
-        <p className="mt-3 text-xs text-white/40 px-4 sm:px-0">
-          No account required. Quick Plan uses just your BMI &amp; goals — skip the upload.
-        </p>
-
-        <div className="mt-8 sm:mt-10 mb-4"><StatsBadge variant="hero" /></div>
       </div>
 
-      <div id="how-it-works" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 pb-6 px-2 sm:px-0">
-        {FEATURES.map((f) => (
-          <div key={f.title} className="card p-6 hover:border-teal/30 transition group">
-            <div className="w-11 h-11 rounded-xl bg-teal/10 text-teal border border-teal/20 flex items-center justify-center mb-4 group-hover:scale-110 transition">
-              {f.icon}
-            </div>
-            <h3 className="text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm text-white/60 leading-relaxed">{f.description}</p>
-          </div>
+      <div className="mt-8"><StatsBadge variant="hero" /></div>
+      <div id="how-it-works" className="grid grid-cols-1 gap-5 py-12 md:grid-cols-3">
+        {FEATURES.map(([number, title, description]) => (
+          <article key={title} className="card group relative overflow-hidden p-7 transition duration-300 hover:-translate-y-1.5 hover:border-blue-300 hover:shadow-[0_24px_55px_rgba(37,99,235,.12)]">
+            <span className="text-4xl font-black text-blue-100 transition group-hover:text-blue-200">{number}</span>
+            <h2 className="mt-4 text-xl font-bold text-white">{title}</h2>
+            <p className="mt-2 text-sm leading-6 text-white/60">{description}</p>
+          </article>
         ))}
       </div>
     </section>

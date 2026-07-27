@@ -1,5 +1,8 @@
 import express from 'express';
 import { generateHealthPlan as defaultGenerate } from '../services/aiService.js';
+import { createAiRateLimit } from '../middleware/aiRateLimit.js';
+import { detectUrgentConcern, urgentResponse } from '../services/medicalSafety.js';
+import { requireSupabaseUser } from '../middleware/supabaseAuth.js';
 
 const DEFAULT_HEIGHT_CM = 155;
 
@@ -36,10 +39,13 @@ export function createQuickPlanRouter(deps = {}) {
   } = deps;
 
   const router = express.Router();
+  const aiRateLimit = deps.aiRateLimit || createAiRateLimit();
+  const authenticate = deps.authenticate || requireSupabaseUser;
 
-  router.post('/api/quick-plan', async (req, res) => {
+  router.post('/api/quick-plan', authenticate, aiRateLimit, async (req, res) => {
     const err = validateProfile(req.body);
     if (err) return res.status(400).json({ error: err });
+    if (detectUrgentConcern(req.body)) return res.status(422).json(urgentResponse());
 
     try {
       const plan = await generateHealthPlan('', coerce(req.body), { allowFallback: true });
@@ -50,7 +56,6 @@ export function createQuickPlanRouter(deps = {}) {
     } catch (e) {
       return res.status(500).json({
         error: 'Could not generate a plan. Please try again.',
-        detail: e?.message,
       });
     }
   });

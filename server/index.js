@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,8 +9,14 @@ import { createContactRouter } from './routes/contact.js';
 import { createStatsRouter } from './routes/stats.js';
 import { createQuickPlanRouter } from './routes/quickPlan.js';
 import { createExtractProfileRouter } from './routes/extractProfile.js';
+import { createSessionStateRouter } from './routes/sessionState.js';
+import { createWeeklyPlanRouter } from './routes/weeklyPlan.js';
 import { createStatsService } from './services/statsService.js';
 import { createMailService, buildDefaultTransporter } from './services/mailService.js';
+
+// Load server settings first, then reuse the local Vite Supabase settings in
+// development. Production should set the non-VITE server variables directly.
+dotenv.config({ path: ['.env', '../client/.env'] });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 5000;
@@ -20,7 +26,25 @@ async function start() {
 
   // In production (same-origin), CORS isn't needed but we keep it permissive.
   // In dev, frontend is on localhost:5173 hitting localhost:5000.
-  app.use(cors());
+  const allowedOrigins = (process.env.CORS_ORIGINS || process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',').map((value) => value.trim()).filter(Boolean);
+  app.use(cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('Origin not allowed'));
+    },
+    credentials: true,
+  }));
+  app.use((_req, res, next) => {
+    res.set({
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    });
+    next();
+  });
   app.set('trust proxy', true);
   app.use(express.json({ limit: '1mb' }));
 
@@ -63,6 +87,8 @@ a{color:#00D4AA}code{background:#141B30;padding:2px 6px;border-radius:4px;font-s
   });
 
   app.use(createStatsRouter({ stats }));
+  app.use(createSessionStateRouter());
+  app.use(createWeeklyPlanRouter());
   app.use(createExtractProfileRouter());
   app.use(createAnalyzeRouter({ stats }));
   app.use(createQuickPlanRouter({ stats }));

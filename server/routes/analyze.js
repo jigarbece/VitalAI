@@ -3,10 +3,21 @@ import multer from 'multer';
 import { extractTextFromPdf as defaultPdf } from '../services/pdfParser.js';
 import { extractTextFromImage as defaultOcr } from '../services/ocrService.js';
 import { generateHealthPlan as defaultGenerate } from '../services/aiService.js';
+import { createAiRateLimit } from '../middleware/aiRateLimit.js';
+import { detectUrgentConcern, urgentResponse } from '../services/medicalSafety.js';
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const DEFAULT_HEIGHT_CM = 155;
+
+function hasSupportedSignature(file) {
+  const bytes = file?.buffer;
+  if (!bytes || bytes.length < 8) return false;
+  const pdf = bytes.subarray(0, 5).toString() === '%PDF-';
+  const jpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  const png = bytes[0] === 0x89 && bytes.subarray(1, 4).toString() === 'PNG';
+  return pdf || jpeg || png;
+}
 
 function validateProfile(profile) {
   if (!profile || typeof profile !== 'object') return 'userProfile is required';
@@ -46,12 +57,13 @@ export function createAnalyzeRouter(deps = {}) {
   } = deps;
 
   const router = express.Router();
+  const aiRateLimit = deps.aiRateLimit || createAiRateLimit();
   const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: MAX_FILE_BYTES },
   }).single('file');
 
-  router.post('/api/analyze', (req, res) => {
+  router.post('/api/analyze', aiRateLimit, (req, res) => {
     upload(req, res, async (uploadErr) => {
       if (uploadErr) {
         if (uploadErr.code === 'LIMIT_FILE_SIZE') {
@@ -75,6 +87,10 @@ export function createAnalyzeRouter(deps = {}) {
       if (validationError) {
         return res.status(400).json({ error: validationError });
       }
+      if (!hasSupportedSignature(req.file)) {
+        return res.status(415).json({ error: 'Unsupported or invalid file. Upload a genuine PDF, JPG, or PNG report.' });
+      }
+      if (detectUrgentConcern(profile)) return res.status(422).json(urgentResponse());
 
       const coerced = coerceProfile(profile);
       const mime = (req.file.mimetype || '').toLowerCase();
@@ -100,10 +116,8 @@ export function createAnalyzeRouter(deps = {}) {
         }
         return res.json(plan);
       } catch (err) {
-        const message = err && err.message ? err.message : 'Internal error';
         return res.status(500).json({
           error: 'Analysis failed. Please try again in a moment.',
-          detail: message,
         });
       }
     });

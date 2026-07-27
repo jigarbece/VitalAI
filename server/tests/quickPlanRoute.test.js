@@ -6,7 +6,7 @@ import { createQuickPlanRouter } from '../routes/quickPlan.js';
 function buildApp(deps) {
   const app = express();
   app.use(express.json());
-  app.use(createQuickPlanRouter(deps));
+  app.use(createQuickPlanRouter({ authenticate: (_req, _res, next) => next(), ...deps }));
   return app;
 }
 

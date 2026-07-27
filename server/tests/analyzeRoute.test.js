@@ -73,7 +73,7 @@ describe('POST /api/analyze', () => {
     const app = buildApp({ extractTextFromPdf, extractTextFromImage, generateHealthPlan });
     const res = await request(app)
       .post('/api/analyze')
-      .attach('file', Buffer.from('fakeimg'), { filename: 'r.jpg', contentType: 'image/jpeg' })
+      .attach('file', Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46]), { filename: 'r.jpg', contentType: 'image/jpeg' })
       .field('userProfile', JSON.stringify(sampleProfile));
     expect(res.status).toBe(200);
     expect(extractTextFromImage).toHaveBeenCalledOnce();
